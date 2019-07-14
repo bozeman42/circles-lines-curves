@@ -4,5 +4,11 @@ html, body {
 }
 
 canvas {
-  background-color: black;
+  background-color: white;
+}
+
+#controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }

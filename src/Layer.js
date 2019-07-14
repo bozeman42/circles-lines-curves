@@ -14,7 +14,17 @@ export default class Layer {
   }
 
   resize() {
-    this.canvas.height = window.innerHeight
-    this.canvas.width = window.innerWidth
+    this.height = window.innerHeight
+    this.width = window.innerWidth
+    this._resizeCanvas()
+  }
+
+  _resizeCanvas() {
+    this.canvas.height = this.height
+    this.canvas.width = this.width
+  }
+
+  clear() {
+    this.context.clearRect(0, 0, this.width, this.height)
   }
 }

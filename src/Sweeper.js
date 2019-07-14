@@ -1,6 +1,3 @@
-const LINE_COLOR = 'black'
-const SWEEPER_COLOR = 'yellow'
-
 export default class Sweeper {
   constructor(position, direction, sweeperColor, pathColor) {
     this.position = position,
@@ -22,7 +19,7 @@ export default class Sweeper {
       lineCtx.moveTo(...this.prevSpot)
       lineCtx.lineTo(...this.end)
     } else {
-      lineCtx.fillRect(...this.end,1,1)
+      // lineCtx.fillRect(...this.end,1,1)
     }
     lineCtx.stroke()
     this.prevSpot = this.end

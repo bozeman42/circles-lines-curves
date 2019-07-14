@@ -1,60 +1,79 @@
-import Layer from './Layer'
 import CircleWithSweeper from './CircleWithSweeper'
+
+import { mainLayer, lineLayer, circleLayer } from './setup'
 
 import './index.css'
 
-
-const body = document.querySelector('body')
-
-let w = 0
-let h = 0
-
-function setDimensions() {
-  w = window.innerWidth
-  h = window.innerHeight
-}
-setDimensions()
-
-const mainLayer = new Layer(w, h)
-const circleLayer = new Layer(w, h)
-const lineLayer = new Layer(w, h)
-const mainCtx = mainLayer.context
-
-body.appendChild(mainLayer.canvas)
-
-window.addEventListener('resize', e => {
-  console.log('Resized!')
-  const lineBuffer = new Layer(w,h)
-  lineBuffer.context.drawImage(lineLayer.canvas,0,0)
-  lineBuffer.context.stroke()
-  const layers = [mainLayer, circleLayer, lineLayer]
-  layers.forEach(layer => {
-    layer.resize()
-  })
-  lineLayer.context.drawImage(lineBuffer.canvas,0,0)
-  lineLayer.context.stroke()
-  setDimensions()
-})
-
+let sweeperCircle
 let circleX = 900
 let circleY = 450
-const aCircle = new CircleWithSweeper(circleX,circleY,200, 50, circleLayer, lineLayer)
-aCircle.addChild(150,170)
-aCircle.addChild(75,-500)
-aCircle.addChild(5,1500)
-aCircle.addChild(55,400)
+
+let currentAnimation
 let prevTime = null
+let count = 0
+let mode = 'none'
+let iterator = 1
+function setup(type) {
+  cancelAnimationFrame(currentAnimation)
+  if (type === 'square') {
+    if (mode !== 'square') {
+      mode = 'square'
+      iterator = 1
+      sweeperCircle = new CircleWithSweeper(circleX,circleY,200/iterator,Math.PI * iterator / 2, 0, circleLayer, lineLayer)
+    } else {
+      iterator += 1
+      prevTime = null
+      count = 0
+      sweeperCircle.addChild(200/iterator,Math.PI * iterator / 2 )
+      function resetAngle(sweeperCircle, angle) {
+        sweeperCircle.sweeper.direction.angle = angle
+        if (sweeperCircle.child) {
+          resetAngle(sweeperCircle.child, angle)
+        }
+      }
+      resetAngle(sweeperCircle, 0)
+    }
+  } else {
+    if (mode !== 'random') {
+      mode = 'random'
+      iterator = 1
+      sweeperCircle = new CircleWithSweeper(circleX, circleY, Math.random() * 100, Math.random() * 4 * Math.PI - (2 * Math.PI), Math.random() * Math.PI * 2,circleLayer, lineLayer)
+    } else {
+      iterator++
+      sweeperCircle.addChild(Math.random() * 200 / (1 + Math.random()), Math.random() * 6 * Math.PI - (3 * Math.PI), Math.random() * 2 * Math.PI)
+    }
+  }
+  prevTime = null
+  count = 0
+  currentAnimation = requestAnimationFrame(update)
+}
+
+const squareWaveButton = document.getElementById('square-wave')
+const randomButton = document.getElementById('random')
+
+randomButton.onclick = e => {
+  lineLayer.clear()
+  setup()
+}
+
+squareWaveButton.onclick = e => {
+  mainLayer.clear()
+  circleLayer.clear()
+  lineLayer.clear()
+  setup('square')
+}
+
 function update(time) {
   let dT = 0
   if (prevTime) {
-    dT = (time - prevTime) / 1000
+    dT = count > 5 ? (time - prevTime) / 2500 : 0
+    mainLayer.clear()
+    circleLayer.clear()
+    sweeperCircle.update(dT, mainLayer.context)
+    sweeperCircle.draw(mainLayer.context)
   }
-  mainCtx.clearRect(0,0,w, h)
-  circleLayer.context.clearRect(0,0,w, h)
-  aCircle.update(dT, mainCtx)
-  aCircle.draw(mainCtx)
   prevTime = time
-  requestAnimationFrame(update)
+  count++
+  currentAnimation = requestAnimationFrame(update)
 }
 
-update()
