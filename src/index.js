@@ -14,23 +14,25 @@ let count = 0
 let mode = 'none'
 let iterator = 1
 function setup(type) {
+  const height = window.innerHeight
+  const width = window.innerWidth
   cancelAnimationFrame(currentAnimation)
   if (type === 'square') {
     if (mode !== 'square') {
       mode = 'square'
       iterator = 1
-      sweeperCircle = new CircleWithSweeper(circleX,circleY,200/iterator,Math.PI * iterator / 2, 0, circleLayer, lineLayer)
-      sweeperCircle.addChild(200/iterator, -1 * (Math.PI * iterator / 2), Math.PI)
+      sweeperCircle = new CircleWithSweeper(circleX,circleY,((height - 100) / 4)/iterator,Math.PI * iterator / 2, 0, circleLayer, lineLayer)
+      sweeperCircle.addChild(((height - 100) / 4) /iterator, -1 * (Math.PI * iterator / 2), Math.PI)
     } else {
       iterator += 2
       prevTime = null
       count = 0
-      sweeperCircle.addChild(200/iterator, Math.PI * iterator / 2, 0)
-      sweeperCircle.addChild(200/iterator, -1 * (Math.PI * iterator / 2), Math.PI)
+      sweeperCircle.addChild(((height - 100) / 4) /iterator, Math.PI * iterator / 2, 0)
+      sweeperCircle.addChild(((height - 100) / 4) /iterator, -1 * (Math.PI * iterator / 2), Math.PI)
       sweeperCircle.resetAngle()
     }
   } else {
-    const radius = Math.random() * 200 / iterator
+    const radius = Math.random() * ((height - 100) / 4) /iterator
     const angularVelocity = Math.random() * 6 * Math.PI - (3 * Math.PI)
     if (mode !== 'random') {
       mode = 'random'
