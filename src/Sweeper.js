@@ -14,12 +14,10 @@ export default class Sweeper {
   drawPath(lineCtx) {
     lineCtx.fillStyle = this.pathColor
     lineCtx.strokeStyle = this.pathColor
-    lineCtx.beginPath()
     if (this.prevSpot) {
+      lineCtx.beginPath()
       lineCtx.moveTo(...this.prevSpot)
       lineCtx.lineTo(...this.end)
-    } else {
-      // lineCtx.fillRect(...this.end,1,1)
     }
     lineCtx.stroke()
     this.prevSpot = this.end

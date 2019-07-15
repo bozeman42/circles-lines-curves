@@ -5,7 +5,7 @@ import { mainLayer, lineLayer, circleLayer } from './setup'
 import './index.css'
 
 let sweeperCircle
-let circleX = 900
+let circleX = 0
 let circleY = 450
 
 let currentAnimation
@@ -20,27 +20,28 @@ function setup(type) {
       mode = 'square'
       iterator = 1
       sweeperCircle = new CircleWithSweeper(circleX,circleY,200/iterator,Math.PI * iterator / 2, 0, circleLayer, lineLayer)
+      sweeperCircle.addChild(200/iterator, -1 * (Math.PI * iterator / 2), Math.PI)
     } else {
-      iterator += 1
+      iterator += 2
       prevTime = null
       count = 0
-      sweeperCircle.addChild(200/iterator,Math.PI * iterator / 2 )
-      function resetAngle(sweeperCircle, angle) {
-        sweeperCircle.sweeper.direction.angle = angle
-        if (sweeperCircle.child) {
-          resetAngle(sweeperCircle.child, angle)
-        }
-      }
-      resetAngle(sweeperCircle, 0)
+      sweeperCircle.addChild(200/iterator, Math.PI * iterator / 2, 0)
+      sweeperCircle.addChild(200/iterator, -1 * (Math.PI * iterator / 2), Math.PI)
+      sweeperCircle.resetAngle()
     }
   } else {
+    const radius = Math.random() * 200 / iterator
+    const angularVelocity = Math.random() * 6 * Math.PI - (3 * Math.PI)
     if (mode !== 'random') {
       mode = 'random'
       iterator = 1
-      sweeperCircle = new CircleWithSweeper(circleX, circleY, Math.random() * 100, Math.random() * 4 * Math.PI - (2 * Math.PI), Math.random() * Math.PI * 2,circleLayer, lineLayer)
+      sweeperCircle = new CircleWithSweeper(circleX, circleY, radius, angularVelocity, 0, circleLayer, lineLayer)
+      sweeperCircle.addChild(radius, -angularVelocity, Math.PI)
     } else {
       iterator++
-      sweeperCircle.addChild(Math.random() * 200 / (1 + Math.random()), Math.random() * 6 * Math.PI - (3 * Math.PI), Math.random() * 2 * Math.PI)
+      sweeperCircle.addChild(radius, angularVelocity, 0)
+      sweeperCircle.addChild(radius, -angularVelocity, Math.PI)
+      sweeperCircle.resetAngle()
     }
   }
   prevTime = null
@@ -69,8 +70,17 @@ function update(time) {
     dT = count > 5 ? (time - prevTime) / 2500 : 0
     mainLayer.clear()
     circleLayer.clear()
+    circleX++
+    if (circleX > window.innerWidth) {
+      circleX = 0
+      lineLayer.clear()
+    }
+    sweeperCircle.setCenter(circleX, circleY)
     sweeperCircle.update(dT, mainLayer.context)
     sweeperCircle.draw(mainLayer.context)
+    if (circleX === 0) {
+      lineLayer.clear()
+    }
   }
   prevTime = time
   count++

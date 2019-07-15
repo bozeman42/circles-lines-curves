@@ -22,7 +22,7 @@ export default class CircleWithSweeper {
 
   addChild(radius, rotation, initialAngle = 0) {
     if(this.child){
-      this.child.addChild(radius, initialAngle, rotation)
+      this.child.addChild(radius, rotation, initialAngle)
     } else {
       this.child = new CircleWithSweeper(...this.sweeper.end, radius, rotation, initialAngle, this.circleLayer, this.lineLayer)
     }
@@ -53,4 +53,12 @@ export default class CircleWithSweeper {
   rotate(angle) {
     this.sweeper.direction.rotate(angle)
   }
+
+  resetAngle() {
+    this.sweeper.direction.angle = this.initialAngle
+    if (this.child) {
+      this.child.resetAngle()
+    }
+  }
+
 }
