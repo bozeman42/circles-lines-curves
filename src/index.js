@@ -6,7 +6,7 @@ import './index.css'
 
 let sweeperCircle
 let circleX = 0
-let circleY = 450
+let circleY = window.innerHeight / 2
 
 let currentAnimation
 let prevTime = null
