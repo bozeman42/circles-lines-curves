@@ -5,8 +5,10 @@ import { mainLayer, lineLayer, circleLayer } from './setup'
 import './index.css'
 
 let sweeperCircle
+const height = window.innerHeight
+const width = window.innerWidth
 let circleX = 0
-let circleY = window.innerHeight / 2
+let circleY = height / 2
 
 let currentAnimation
 let prevTime = null
@@ -14,8 +16,6 @@ let count = 0
 let mode = 'none'
 let iterator = 1
 function setup(type) {
-  const height = window.innerHeight
-  const width = window.innerWidth
   cancelAnimationFrame(currentAnimation)
   if (type === 'square') {
     if (mode !== 'square') {
